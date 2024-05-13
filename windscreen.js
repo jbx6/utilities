@@ -16,16 +16,22 @@ const prerequisites = {
   }
 }
 
-let isLabourFree = !true;
-
 function calculateCost(isLabourFree: boolean) {
   try {
     const { glass, tools, labour } = prerequisites;
-    if (!glass || !tools || !labour) {
+      if (!glass || !tools || !labour) {
       throw new Error(`Prerequisites not met: ${!glass ? "glass" : ""} ${!tools ? "tools" : ""} ${!labour ? "labour" : ""}`)
-    }
+  }
     
     const { windscreen, delivery } = glass;
+        if (!windscreen || !delivery) {
+      throw new Error(`Glass prerequisites not met: ${!windscreen ? "windscreen" : ""} ${!delivery ? "delivery" : ""}`)
+    }
+
+      if (typeof windscreen !== "number" || typeof delivery !== "number") {
+        throw new Error(`Invalid glass cost values: ${!windscreen ? "windscreen" : ""} ${!delivery ? "delivery" : ""}`)
+      }
+    
     const costOfGlass = windscreen + delivery;
     
     const { suctionCups, cleaningSolution, adhesive } = tools;
@@ -37,9 +43,9 @@ function calculateCost(isLabourFree: boolean) {
     let totalCost;
     
     if (isLabourFree) {
-      totalCost = windscreen + delivery + suctionCups + cleaningSolution + adhesive + costOfLabour;
+      totalCost = windscreen + delivery + suctionCups + cleaningSolution + adhesive;
     } else {
-      totalCost = windscreen + delivery + suctionCups + cleaningSolution + adhesive
+      totalCost = windscreen + delivery + suctionCups + cleaningSolution + adhesive + costOfLabour
     }
     
     const output = {
@@ -56,6 +62,6 @@ function calculateCost(isLabourFree: boolean) {
   }
 }
 
-const bmw118dWindscreenJobCost = calculateCost(isLabourFree);
+const bmw118dWindscreenJobCost = calculateCost(true);
 
 console.log(bmw118dWindscreenJobCost)
