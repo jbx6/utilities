@@ -53,7 +53,8 @@ class Job {
         prerequisites: this.prerequisites
       };
 
-      return output;
+      console.log(output);
+      // return output; // If you want to return the output for further processing
 
     } catch (error) {
       console.error(`Error calculating cost of job: ${error.message}`);
