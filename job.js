@@ -2,7 +2,7 @@ class Job {
   constructor(name) {
     this.name = name;
     this.prerequisites = {
-      glass: {
+      materials: {
         windscreen: 276.68,
         delivery: 30
       },
@@ -13,28 +13,30 @@ class Job {
       },
       labour: {
         freeLabour: false, // Assuming which, by default, labour != free
-        hours: 6,
+        hours: this.hours, // Here 'this.hours' refers to the hours provided during instantiation of the Job instance
         rate: this.rate // Here 'this.rate' refers to the rate provided during instantiation of the Job instance
       }
     };
   }
 
-  setLabourRate(rate) {
+  setLabour(rate, hours, freeLabour) {
     this.prerequisites.labour.rate = rate;
-  }
-  
-  setFreeLabour(value) {
-    this.prerequisites.labour.freeLabour = value;
+    this.prerequisites.labour.hours = hours;
+    this.prerequisites.labour.freeLabour = freeLabour;
   }
 
   calculateCost() {
     try {
-      const { glass, tools, labour } = this.prerequisites;
-      const { windscreen, delivery } = glass;
+      const { materials, tools, labour } = this.prerequisites;
+      if (!materials || !tools || !labour) {
+        throw new Error(`Prerequisites not met: ${!materials ? "materials" : ""} ${!tools ? "tools" : ""} ${!labour ? "labour" : ""}`);
+      }
+      
+      const { windscreen, delivery } = materials;
       const { suctionCups, cleaningSolution, adhesive } = tools;
       const { freeLabour, hours, rate } = labour;
 
-      const costOfGlass = windscreen + delivery;
+      const costOfMaterials = windscreen + delivery;
       const costOfTools = suctionCups + cleaningSolution + adhesive;
       let costOfLabour = hours * rate;
 
@@ -49,7 +51,7 @@ class Job {
       const output = {
         job: this.name,
         cost: totalCost,
-        breakdown: { glass: costOfGlass, tools: costOfTools, labour: costOfLabour },
+        breakdown: { glass: costOfMaterials, tools: costOfTools, labour: costOfLabour },
         prerequisites: this.prerequisites
       };
 
@@ -64,6 +66,5 @@ class Job {
 }
 
 const bmwWindscreen = new Job("118d Windscreen Replacement");
-bmwWindscreen.setLabourRate(20); // Set the labour rate separately
-bmwWindscreen.setFreeLabour(true)
+bmwWindscreen.setLabour(20, 6, false); // Set labout rate, hours and freeLabour (true/false)
 bmwWindscreen.calculateCost();
